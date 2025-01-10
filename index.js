@@ -42,18 +42,42 @@ app.post("/GlobalTodos/CreateTodo", async function (req, res) {
   res.json({ msg: "Todo has been SuccessFully added to DataBase" });
 });
 
-app.put("/GlobalTodos/Completed", function (req, res) {
-  const id = req.body.id;
+app.put("/GlobalTodos/Completed", async function (req, res) {
+  const updateTodoId = req.body.id;
+  console.log(updateTodoId);
+  const UpdateingTodoToCompleted = await TodoDatabase.findOneAndUpdate(
+    { _id: updateTodoId },
+    {
+      isCompleted: true,
+    }
+  );
+  if (!UpdateingTodoToCompleted) {
+    res.status(401).json({
+      msg: "Unable to Update Todo To Completed ",
+    });
+  }
 
   //Some Logic To Update the status of the todo to be completed.
-  res.json({ msg: "Wokring on the logic" });
+  res.json({ msg: "Todo Has been updated To Completed in Db" });
 });
 
-app.put("/GlobalTodos/NotCompleted", function (req, res) {
-  const id = req.body.id;
+app.put("/GlobalTodos/NotCompleted", async function (req, res) {
+  const updateTodoId = req.body.id;
+  console.log(updateTodoId);
+  const UpdateingTodoToCompleted = await TodoDatabase.findOneAndUpdate(
+    { _id: updateTodoId },
+    {
+      isCompleted: false,
+    }
+  );
+  if (!UpdateingTodoToCompleted) {
+    res.status(401).json({
+      msg: "Unable to Update Todo To Completed ",
+    });
+  }
 
   //Some Logic To Update the status of the todo to be completed.
-  res.json({ msg: "Wokring on the logic" });
+  res.json({ msg: "Todo Has been updated to NotCompleted in Db" });
 });
 
 app.listen(PORT, function () {

@@ -9,6 +9,8 @@ app.use(express.json());
 const PORT = process.env.PORT;
 app.get("/GlobalTodos/AllTodos", function (req, res) {
   //some logic to retrive all todos which type is global
+  const { title, description } = req.body;
+  console.log(title, description);
   res.json({ msg: "Wokring on the logic" });
 });
 

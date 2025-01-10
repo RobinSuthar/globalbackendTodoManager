@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import TodoDatabase from "./db.js";
 import cors from "cors";
+import { TodoSchema, UserId } from "./type.js";
 
 dotenv.config();
 
@@ -25,6 +26,13 @@ app.get("/GlobalTodos/AllTodos", async function (req, res) {
 app.post("/GlobalTodos/CreateTodo", async function (req, res) {
   const { title, description } = req.body;
   console.log(title, description);
+  const ParsedUserInputs = TodoSchema.safeParse(req.body);
+  if (!ParsedUserInputs.success) {
+    return res.json({
+      msg: "Invalid Title or Description length",
+    });
+  }
+
   const CreatingTodo = await TodoDatabase.create({
     type: "Global",
     title: title,
@@ -44,17 +52,28 @@ app.post("/GlobalTodos/CreateTodo", async function (req, res) {
 
 app.put("/GlobalTodos/Completed", async function (req, res) {
   const updateTodoId = req.body.id;
-  console.log(updateTodoId);
-  const UpdateingTodoToCompleted = await TodoDatabase.findOneAndUpdate(
-    { _id: updateTodoId },
-    {
-      isCompleted: true,
-    }
-  );
-  if (!UpdateingTodoToCompleted) {
-    res.status(401).json({
-      msg: "Unable to Update Todo To Completed ",
+  console.log(typeof updateTodoId);
+  const Parsingid = UserId.safeParse(updateTodoId);
+  console.log(Parsingid);
+  if (!Parsingid.success) {
+    return res.json({
+      msg: "Incorrect Id",
     });
+  }
+  try {
+    const UpdateingTodoToCompleted = await TodoDatabase.findOneAndUpdate(
+      { _id: updateTodoId },
+      {
+        isCompleted: true,
+      }
+    );
+    if (!UpdateingTodoToCompleted) {
+      return res.status(401).json({
+        msg: "Unable to Update Todo To Completed ",
+      });
+    }
+  } catch (err) {
+    return res.json({ msg: err });
   }
 
   //Some Logic To Update the status of the todo to be completed.
@@ -63,16 +82,30 @@ app.put("/GlobalTodos/Completed", async function (req, res) {
 
 app.put("/GlobalTodos/NotCompleted", async function (req, res) {
   const updateTodoId = req.body.id;
-  console.log(updateTodoId);
-  const UpdateingTodoToCompleted = await TodoDatabase.findOneAndUpdate(
-    { _id: updateTodoId },
-    {
-      isCompleted: false,
+
+  const Parsingid = UserId.safeParse(updateTodoId);
+
+  if (!Parsingid.success) {
+    return res.json({
+      msg: "Incorrect Id",
+    });
+  }
+
+  try {
+    const UpdateingTodoToCompleted = await TodoDatabase.findOneAndUpdate(
+      { _id: updateTodoId },
+      {
+        isCompleted: false,
+      }
+    );
+    if (!UpdateingTodoToCompleted) {
+      res.status(401).json({
+        msg: "Unable to Update Todo To Completed ",
+      });
     }
-  );
-  if (!UpdateingTodoToCompleted) {
-    res.status(401).json({
-      msg: "Unable to Update Todo To Completed ",
+  } catch (err) {
+    return res.json({
+      msg: err,
     });
   }
 

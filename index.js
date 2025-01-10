@@ -1,25 +1,45 @@
 import express from "express";
 import dotenv from "dotenv";
+import TodoDatabase from "./db.js";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 
+app.use(cors());
+
 const PORT = process.env.PORT;
-app.get("/GlobalTodos/AllTodos", function (req, res) {
+app.get("/GlobalTodos/AllTodos", async function (req, res) {
   //some logic to retrive all todos which type is global
-  const { title, description } = req.body;
-  console.log(title, description);
-  res.json({ msg: "Wokring on the logic" });
+  const allTodosWithGlobalType = await TodoDatabase.find({ type: "Global" });
+  if (!allTodosWithGlobalType) {
+    res.status(401).json({
+      msg: "Cannot get the Todos with Global type",
+    });
+  }
+  res.json({ allTodosWithGlobalType });
 });
 
-app.post("/GlobalTodos/CreateTodo", function (req, res) {
-  const [title, description] = req.body;
-  const name = "GlobalUser";
+app.post("/GlobalTodos/CreateTodo", async function (req, res) {
+  const { title, description } = req.body;
+  console.log(title, description);
+  const CreatingTodo = await TodoDatabase.create({
+    type: "Global",
+    title: title,
+    description: description,
+    username: "Global",
+    isCompleted: false,
+  });
 
-  //Some Logic To add the new todo into data
-  res.json({ msg: "Wokring on the logic" });
+  if (!CreatingTodo) {
+    res.status(401).json({
+      msg: "UnFortunately Cannot add into DataBase",
+    });
+    return;
+  }
+  res.json({ msg: "Todo has been SuccessFully added to DataBase" });
 });
 
 app.put("/GlobalTodos/Completed", function (req, res) {

@@ -27,3 +27,5 @@ const TodoSchema = new mongoose.Schema(
 );
 
 const TodoDatabase = mongoose.model("Todos", TodoSchema);
+
+export default TodoDatabase;

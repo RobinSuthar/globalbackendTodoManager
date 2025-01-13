@@ -1,4 +1,4 @@
-import zod from "zod";
+import zod, { string } from "zod";
 
 const TodoSchema = zod.object({
   title: zod.string().min(5).max(40),
@@ -16,6 +16,15 @@ const OrganizationSchemaValdaition = zod.object({
   pin: zod.string().min(3).max(15),
 });
 
+const CompanySchema = zod.object({
+  name: zod.string(),
+  author: zod.string().min(1).max(40),
+  title: zod.string().min(5).max(40),
+  description: zod.string().min(5).max(40),
+  importance: zod.number().min(0).max(6),
+  tag: string(),
+});
+
 const UserNameSchema = zod.string().min(2).max(30);
 
 const UserId = zod.string().min(5).max(50);
@@ -25,4 +34,5 @@ export {
   UserId,
   TodoSchemaIndiviual,
   OrganizationSchemaValdaition,
+  CompanySchema,
 };

@@ -47,6 +47,7 @@ const OrganizationSchema = new mongoose.Schema(
 
 const ComopanySchema = new mongoose.Schema(
   {
+    name: String,
     author: String,
     title: String,
     description: String,

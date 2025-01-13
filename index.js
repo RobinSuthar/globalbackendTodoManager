@@ -1,9 +1,15 @@
 import express from "express";
 import dotenv from "dotenv";
-import { TodoDatabase, UserDatabase, OrganizationDatabase } from "./db.js";
+import {
+  TodoDatabase,
+  UserDatabase,
+  OrganizationDatabase,
+  CompanyDatbase,
+} from "./db.js";
 
 import cors from "cors";
 import {
+  CompanySchema,
   OrganizationSchemaValdaition,
   TodoSchema,
   TodoSchemaIndiviual,
@@ -288,9 +294,9 @@ app.post("/Organzations/CreateOrganztion", async function (req, res) {
 
 //Three End point for the Company Todos Management
 
-app.get("/GlobalTodos/AllTodos", async function (req, res) {
+app.get("/Company/AllTodos", async function (req, res) {
   //some logic to retrive all todos which type is global
-  const allTodosWithGlobalType = await TodoDatabase.find({ type: "Global" });
+  const allTodosByCompant = await TodoDatabase.find({ type: "Global" });
   console.log(allTodosWithGlobalType);
   if (!allTodosWithGlobalType) {
     res.status(401).json({
@@ -326,24 +332,28 @@ app.post("/GlobalTodos/CreateTodo", async function (req, res) {
   res.json({ msg: "Todo has been SuccessFully added to DataBase" });
 });
 
-app.put("/GlobalTodos/Completed", async function (req, res) {
-  const updateTodoId = req.body.id;
-  const Parsingid = UserId.safeParse(updateTodoId);
-  if (!Parsingid.success) {
+app.post("/Company/Todos", async function (req, res) {
+  const { name, author, title, description, importance, tag } = req.body;
+  const ParsingCompanyTodo = CompanySchema.safeParse(req.body);
+  console.log(ParsingCompanyTodo);
+  if (!ParsingCompanyTodo.success) {
     return res.json({
-      msg: "Incorrect Id",
+      msg: "Thats incorrect format to send a compnay Todo",
     });
   }
+
   try {
-    const UpdateingTodoToCompleted = await TodoDatabase.findOneAndUpdate(
-      { _id: updateTodoId },
-      {
-        isCompleted: true,
-      }
-    );
-    if (!UpdateingTodoToCompleted) {
+    const AddingCompanyTodo = await CompanyDatbase.create({
+      name: name,
+      author: author,
+      title: title,
+      description: description,
+      importance: importance,
+      tag: tag,
+    });
+    if (!AddingCompanyTodo) {
       return res.status(401).json({
-        msg: "Unable to Update Todo To Completed ",
+        msg: "Unable to Add Compant Todo into Datbase ",
       });
     }
   } catch (err) {
@@ -351,7 +361,7 @@ app.put("/GlobalTodos/Completed", async function (req, res) {
   }
 
   //Some Logic To Update the status of the todo to be completed.
-  res.json({ msg: "Todo Has been updated To Completed in Db" });
+  res.json({ msg: "Compant Todo has been added into Db" });
 });
 
 app.put("/GlobalTodos/NotCompleted", async function (req, res) {

@@ -141,6 +141,21 @@ app.get("/Indiviual/AllTodos", async function (req, res) {
   res.json({ allTodosWithIndiviualType });
 });
 
+app.get("/Indiviual/ParticulatIndiviualTodos", async function (req, res) {
+  //some logic to retrive all todos which type is global
+  const usernmae = req.body.username;
+  const allTodosWithIndiviualType = await TodoDatabase.find({
+    username: usernmae,
+  });
+  console.log(allTodosWithIndiviualType);
+  if (!allTodosWithIndiviualType) {
+    res.status(401).json({
+      msg: "Cannot get the Todos with Global type",
+    });
+  }
+  res.json({ allTodosWithIndiviualType });
+});
+
 app.post("/Indiviual/CreateTodo", async function (req, res) {
   const { title, description, username } = req.body;
   const ParsedUserInputs = TodoSchemaIndiviual.safeParse(req.body);

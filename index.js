@@ -296,40 +296,17 @@ app.post("/Organzations/CreateOrganztion", async function (req, res) {
 
 app.get("/Company/AllTodos", async function (req, res) {
   //some logic to retrive all todos which type is global
-  const allTodosByCompant = await TodoDatabase.find({ type: "Global" });
-  console.log(allTodosWithGlobalType);
-  if (!allTodosWithGlobalType) {
+  const nameOfTheCompany = req.body.name;
+  const allTodosByCompany = await CompanyDatbase.find({
+    name: nameOfTheCompany,
+  });
+  console.log(allTodosByCompany);
+  if (!allTodosByCompany) {
     res.status(401).json({
       msg: "Cannot get the Todos with Global type",
     });
   }
-  res.json({ allTodosWithGlobalType });
-});
-
-app.post("/GlobalTodos/CreateTodo", async function (req, res) {
-  const { title, description } = req.body;
-  const ParsedUserInputs = TodoSchema.safeParse(req.body);
-  if (!ParsedUserInputs.success) {
-    return res.json({
-      msg: "Invalid Title or Description length",
-    });
-  }
-
-  const CreatingTodo = await TodoDatabase.create({
-    type: "Global",
-    title: title,
-    description: description,
-    username: "Global",
-    isCompleted: false,
-  });
-
-  if (!CreatingTodo) {
-    res.status(401).json({
-      msg: "UnFortunately Cannot add into DataBase",
-    });
-    return;
-  }
-  res.json({ msg: "Todo has been SuccessFully added to DataBase" });
+  res.json({ allTodosByCompany });
 });
 
 app.post("/Company/Todos", async function (req, res) {
@@ -350,6 +327,7 @@ app.post("/Company/Todos", async function (req, res) {
       description: description,
       importance: importance,
       tag: tag,
+      isCompleted: false,
     });
     if (!AddingCompanyTodo) {
       return res.status(401).json({
@@ -364,7 +342,7 @@ app.post("/Company/Todos", async function (req, res) {
   res.json({ msg: "Compant Todo has been added into Db" });
 });
 
-app.put("/GlobalTodos/NotCompleted", async function (req, res) {
+app.put("/Company/isCompleted", async function (req, res) {
   const updateTodoId = req.body.id;
 
   const Parsingid = UserId.safeParse(updateTodoId);
@@ -376,7 +354,40 @@ app.put("/GlobalTodos/NotCompleted", async function (req, res) {
   }
 
   try {
-    const UpdateingTodoToCompleted = await TodoDatabase.findOneAndUpdate(
+    const UpdateingTodoToCompleted = await CompanyDatbase.findOneAndUpdate(
+      { _id: updateTodoId },
+      {
+        isCompleted: true,
+      }
+    );
+    if (!UpdateingTodoToCompleted) {
+      res.status(401).json({
+        msg: "Unable to Update Todo To Completed ",
+      });
+    }
+  } catch (err) {
+    return res.json({
+      msg: err,
+    });
+  }
+
+  //Some Logic To Update the status of the todo to be completed.
+  res.json({ msg: "Todo Has been updated In the  Db" });
+});
+
+app.put("/Company/NotCompleted", async function (req, res) {
+  const updateTodoId = req.body.id;
+
+  const Parsingid = UserId.safeParse(updateTodoId);
+
+  if (!Parsingid.success) {
+    return res.json({
+      msg: "Incorrect Id",
+    });
+  }
+
+  try {
+    const UpdateingTodoToCompleted = await CompanyDatbase.findOneAndUpdate(
       { _id: updateTodoId },
       {
         isCompleted: false,

@@ -53,6 +53,7 @@ const ComopanySchema = new mongoose.Schema(
     description: String,
     importance: Number,
     tag: String,
+    isCompleted: Boolean,
   },
   {
     timestamps: true,

@@ -21,8 +21,6 @@ const CompanySchema = zod.object({
   author: zod.string().min(1).max(40),
   title: zod.string().min(5).max(40),
   description: zod.string().min(5).max(40),
-  importance: zod.number().min(0).max(6),
-  tag: string(),
 });
 
 const UserNameSchema = zod.string().min(2).max(30);

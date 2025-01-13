@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import TodoDatabase from "./db.js";
 import cors from "cors";
-import { TodoSchema, UserId } from "./type.js";
+import { TodoSchema, TodoSchemaIndiviual, UserId } from "./type.js";
 
 dotenv.config();
 
@@ -128,9 +128,9 @@ app.get("/Indiviual/AllTodos", async function (req, res) {
   res.json({ allTodosWithIndiviualType });
 });
 
-app.post("/GlobalTodos/CreateTodo", async function (req, res) {
-  const { title, description } = req.body;
-  const ParsedUserInputs = TodoSchema.safeParse(req.body);
+app.post("/Indiviual/CreateTodo", async function (req, res) {
+  const { title, description, username } = req.body;
+  const ParsedUserInputs = TodoSchemaIndiviual.safeParse(req.body);
   if (!ParsedUserInputs.success) {
     return res.json({
       msg: "Invalid Title or Description length",
@@ -138,10 +138,10 @@ app.post("/GlobalTodos/CreateTodo", async function (req, res) {
   }
 
   const CreatingTodo = await TodoDatabase.create({
-    type: "Global",
+    type: "Indiviual",
     title: title,
     description: description,
-    username: "Global",
+    username: username,
     isCompleted: false,
   });
 
@@ -154,7 +154,7 @@ app.post("/GlobalTodos/CreateTodo", async function (req, res) {
   res.json({ msg: "Todo has been SuccessFully added to DataBase" });
 });
 
-app.put("/GlobalTodos/Completed", async function (req, res) {
+app.put("/IndiviualTodos/Completed", async function (req, res) {
   const updateTodoId = req.body.id;
   const Parsingid = UserId.safeParse(updateTodoId);
   if (!Parsingid.success) {
@@ -182,7 +182,7 @@ app.put("/GlobalTodos/Completed", async function (req, res) {
   res.json({ msg: "Todo Has been updated To Completed in Db" });
 });
 
-app.put("/GlobalTodos/NotCompleted", async function (req, res) {
+app.put("/Indiviualtodos/NotCompleted", async function (req, res) {
   const updateTodoId = req.body.id;
 
   const Parsingid = UserId.safeParse(updateTodoId);

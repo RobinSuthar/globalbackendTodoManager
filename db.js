@@ -26,6 +26,44 @@ const TodoSchema = new mongoose.Schema(
   }
 );
 
+const UserSchema = new mongoose.Schema(
+  {
+    username: String,
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const OrganizationSchema = new mongoose.Schema(
+  {
+    name: String,
+    Pin: String,
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const ComopanySchema = new mongoose.Schema(
+  {
+    author: String,
+    title: String,
+    description: String,
+    importance: Number,
+    tag: String,
+  },
+  {
+    timestamps: true,
+  }
+);
+
 const TodoDatabase = mongoose.model("Todos", TodoSchema);
 
-export default TodoDatabase;
+const UserDatabase = mongoose.model("Users", UserSchema);
+
+const OrganizationDatabase = mongoose.model("Organzitions", OrganizationSchema);
+
+const CompanyDatbase = mongoose.model("CompanyTodo", ComopanySchema);
+
+export { TodoDatabase, UserDatabase, OrganizationDatabase, CompanyDatbase };

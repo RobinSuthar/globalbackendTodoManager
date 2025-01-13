@@ -1,8 +1,15 @@
 import express from "express";
 import dotenv from "dotenv";
-import TodoDatabase from "./db.js";
+import { TodoDatabase, UserDatabase, OrganizationDatabase } from "./db.js";
+
 import cors from "cors";
-import { TodoSchema, TodoSchemaIndiviual, UserId } from "./type.js";
+import {
+  OrganizationSchemaValdaition,
+  TodoSchema,
+  TodoSchemaIndiviual,
+  UserId,
+  UserNameSchema,
+} from "./type.js";
 
 dotenv.config();
 
@@ -213,6 +220,69 @@ app.put("/Indiviualtodos/NotCompleted", async function (req, res) {
 
   //Some Logic To Update the status of the todo to be completed.
   res.json({ msg: "Todo Has been updated to NotCompleted in Db" });
+});
+
+//End point for userDatbase
+
+app.post("/users/CreateUser", async function (req, res) {
+  const username = req.body.username;
+
+  const userNameParsing = UserNameSchema.safeParse(username);
+  console.log(userNameParsing);
+  if (!userNameParsing.success) {
+    return res.json({
+      msg: "Incorrect Username",
+    });
+  }
+
+  try {
+    const AddingUserNameToDatabase = await UserDatabase.create({
+      username: username,
+    });
+    if (!AddingUserNameToDatabase) {
+      console.log(Add);
+      res.status(401).json({
+        msg: "Unable to Added User into Database ",
+      });
+    }
+  } catch (err) {
+    return res.json({
+      msg: err,
+    });
+  }
+
+  //Some Logic To Update the status of the todo to be completed.
+  res.json({ msg: "User  has been added to Database" });
+});
+
+app.post("/Organzations/CreateOrganztion", async function (req, res) {
+  const { name, pin } = req.body;
+
+  const OrgnationSafeParsing = OrganizationSchemaValdaition.safeParse(req.body);
+  if (!OrgnationSafeParsing.success) {
+    return res.json({
+      msg: "Incorrect Name or Pin",
+    });
+  }
+  try {
+    const AddingOrganztionToDb = await OrganizationDatabase.create({
+      name: name,
+      Pin: pin,
+    });
+    if (!AddingOrganztionToDb) {
+      console.log(Add);
+      res.status(401).json({
+        msg: "Unable to Organztion  into Database ",
+      });
+    }
+  } catch (err) {
+    return res.json({
+      msg: err,
+    });
+  }
+
+  //Some Logic To Update the status of the todo to be completed.
+  res.json({ msg: "Organztiopn has been added to Database" });
 });
 
 app.listen(PORT, function () {

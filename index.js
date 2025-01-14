@@ -314,7 +314,8 @@ app.post("/Organzations/CreateOrganztion", async function (req, res) {
 
 app.get("/Company/AllTodos", async function (req, res) {
   //some logic to retrive all todos which type is global
-  const nameOfTheCompany = req.body.name;
+
+  const nameOfTheCompany = req.headers.companyname;
   const allTodosByCompany = await CompanyDatbase.find({
     name: nameOfTheCompany,
   });
@@ -328,7 +329,9 @@ app.get("/Company/AllTodos", async function (req, res) {
 });
 
 app.post("/Company/Todos", async function (req, res) {
-  const { name, author, title, description, importance, tag } = req.body;
+  console.log(req.body);
+  const { companyName, author, description, title, importance, tag } = req.body;
+  console.log(companyName, author, description, title, importance, tag);
   const ParsingCompanyTodo = CompanySchema.safeParse(req.body);
   console.log(ParsingCompanyTodo);
   if (!ParsingCompanyTodo.success) {
@@ -339,7 +342,7 @@ app.post("/Company/Todos", async function (req, res) {
 
   try {
     const AddingCompanyTodo = await CompanyDatbase.create({
-      name: name,
+      name: companyName,
       author: author,
       title: title,
       description: description,

@@ -279,9 +279,11 @@ app.post("/users/CreateUser", async function (req, res) {
 });
 
 app.post("/Organzations/CreateOrganztion", async function (req, res) {
-  const { name, pin } = req.body;
+  console.log(req.body);
+  const { companyName, companyPin } = req.body;
 
   const OrgnationSafeParsing = OrganizationSchemaValdaition.safeParse(req.body);
+
   if (!OrgnationSafeParsing.success) {
     return res.json({
       msg: "Incorrect Name or Pin",
@@ -289,8 +291,8 @@ app.post("/Organzations/CreateOrganztion", async function (req, res) {
   }
   try {
     const AddingOrganztionToDb = await OrganizationDatabase.create({
-      name: name,
-      Pin: pin,
+      name: companyName,
+      Pin: companyPin,
     });
     if (!AddingOrganztionToDb) {
       console.log(Add);

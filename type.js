@@ -12,8 +12,8 @@ const TodoSchemaIndiviual = zod.object({
 });
 
 const OrganizationSchemaValdaition = zod.object({
-  name: zod.string().min(5).max(40),
-  pin: zod.string().min(3).max(15),
+  companyName: zod.string().min(5).max(40),
+  companyPin: zod.string().min(2).max(15),
 });
 
 const CompanySchema = zod.object({

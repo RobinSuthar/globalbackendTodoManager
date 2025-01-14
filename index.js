@@ -143,7 +143,8 @@ app.get("/Indiviual/AllTodos", async function (req, res) {
 
 app.get("/Indiviual/ParticulatIndiviualTodos", async function (req, res) {
   //some logic to retrive all todos which type is global
-  const usernmae = req.body.username;
+  const usernmae = req.headers.username;
+  console.log("This is req.body : ", req.headers.username);
   const allTodosWithIndiviualType = await TodoDatabase.find({
     username: usernmae,
   });

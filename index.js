@@ -397,6 +397,7 @@ app.put("/Company/isCompleted", async function (req, res) {
 });
 
 app.put("/Company/NotCompleted", async function (req, res) {
+  console.log("ASdasdas: ", req.body);
   const updateTodoId = req.body.id;
 
   const Parsingid = UserId.safeParse(updateTodoId);

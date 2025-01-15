@@ -19,8 +19,8 @@ const OrganizationSchemaValdaition = zod.object({
 const CompanySchema = zod.object({
   companyName: zod.string(),
   author: zod.string().min(1).max(40),
-  title: zod.string().min(5).max(40),
-  description: zod.string().min(5).max(40),
+  title: zod.string().min(1).max(40),
+  description: zod.string().min(1).max(40),
 });
 
 const UserNameSchema = zod.string().min(2).max(30);

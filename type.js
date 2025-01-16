@@ -2,7 +2,7 @@ import zod, { string } from "zod";
 
 const TodoSchema = zod.object({
   title: zod.string().min(2).max(40),
-  description: zod.string().min(5).max(40),
+  description: zod.string().min(2).max(40),
 });
 
 const TodoSchemaIndiviual = zod.object({
